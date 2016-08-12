@@ -43,6 +43,7 @@ import org.ros.android.view.visualization.layer.CameraControlListener;
 import org.ros.android.view.visualization.layer.LaserScanLayer;
 import org.ros.android.view.visualization.layer.Layer;
 import org.ros.android.view.visualization.layer.OccupancyGridLayer;
+import org.ros.android.view.visualization.layer.PathLayer;
 import org.ros.android.view.visualization.layer.RobotLayer;
 import org.ros.namespace.NameResolver;
 import org.ros.node.NodeConfiguration;
@@ -297,15 +298,23 @@ public class MainActivity extends RosAppActivity {
         String mapTopic   = remaps.get(getString(R.string.map_topic));
         String scanTopic  = remaps.get(getString(R.string.scan_topic));
         String robotFrame = (String) params.get("robot_frame", getString(R.string.robot_frame));
+		//add-------------
+		String planTopic  = remaps.get(getString(R.string.global_plan_topic));
 
         occupancyGridLayer = new OccupancyGridLayer(appNameSpace.resolve(mapTopic).toString());
         laserScanLayer = new LaserScanLayer(appNameSpace.resolve(scanTopic).toString());
         robotLayer = new RobotLayer(robotFrame);
 
-        mapView.addLayer(viewControlLayer);
+		//add--------------------
+		PathLayer pathLayer = new PathLayer(appNameSpace.resolve(planTopic).toString());
+
+
+		mapView.addLayer(viewControlLayer);
         mapView.addLayer(occupancyGridLayer);
         mapView.addLayer(laserScanLayer);
         mapView.addLayer(robotLayer);
+		//add-------------
+		mapView.addLayer(pathLayer);//---自动导航路线
 
         mapView.init(nodeMainExecutor);
         viewControlLayer.addListener(new CameraControlListener() {
